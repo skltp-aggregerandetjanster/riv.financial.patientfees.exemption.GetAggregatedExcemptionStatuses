@@ -28,7 +28,7 @@ mvn gatling:execute -PPatients -DbaseUrl=http://ine-sit-app03.sth.basefarm.net:9
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>se.skltp.aggregatingservices.riv.clinicalprocess.healthcond.description</groupId>
+  <groupId>se.skltp.aggregatingservices.riv.financial.patientfees.exemption</groupId>
   <artifactId>GetAggregatedExemptionStatuses-test-non-functional</artifactId>
   <version>1.2.0-RC1-SNAPSHOT</version>
 
@@ -82,14 +82,14 @@ mvn gatling:execute -PPatients -DbaseUrl=http://ine-sit-app03.sth.basefarm.net:9
     <profile>
       <id>HappyPath</id>
       <properties>
-        <simulationClass>se.skltp.aggregatingservices.riv.clinicalprocess.healthcond.description.getaggregatedcaredocumentation.TPHappyPath</simulationClass>
+        <simulationClass>se.skltp.aggregatingservices.riv.financial.patientfees.exemption.getaggregatedexemptionstatuses.TPHappyPath</simulationClass>
       </properties>
     </profile>
 
     <profile>
       <id>Patients</id>
       <properties>
-        <simulationClass>se.skltp.aggregatingservices.riv.clinicalprocess.healthcond.description.getaggregatedcaredocumentation.TPPatients</simulationClass>
+        <simulationClass>se.skltp.aggregatingservices.riv.financial.patientfees.exemption.getaggregatedexemptionstatuses.TPPatients</simulationClass>
       </properties>
     </profile>
   </profiles>

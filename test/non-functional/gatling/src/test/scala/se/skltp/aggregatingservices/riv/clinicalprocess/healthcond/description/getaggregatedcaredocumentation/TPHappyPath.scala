@@ -1,4 +1,4 @@
-package se.skltp.aggregatingservices.riv.clinicalprocess.healthcond.description.getaggregatedcaredocumentation
+package se.skltp.aggregatingservices.riv.financial.patientfees.exemption.getaggregatedexemptionstatuses
 
 import se.skltp.agp.testnonfunctional.TPHappyPathAbstract
 
