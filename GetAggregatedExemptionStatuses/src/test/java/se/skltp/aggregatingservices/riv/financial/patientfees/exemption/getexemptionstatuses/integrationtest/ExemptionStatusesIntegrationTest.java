@@ -45,26 +45,24 @@ import java.util.List;
 import javax.xml.ws.Holder;
 import javax.xml.ws.soap.SOAPFaultException;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
 
 import riv.financial.patientfees.exemption.getexemptionstatusesresponder.v1.GetExemptionStatusesResponseType;
-import riv.financial.patientfees.exemption.getexemptionstatusesresponder.v1.GetExemptionStatusesType;
 import riv.financial.patientfees.exemption.v1.DatePeriodType;
 import riv.financial.patientfees.exemption.v1.FeeExemptionType;
+import se.skltp.agp.cache.TakCacheBean;
 import se.skltp.agp.riv.interoperability.headers.v1.ProcessingStatusRecordType;
 import se.skltp.agp.riv.interoperability.headers.v1.ProcessingStatusType;
 import se.skltp.agp.test.consumer.AbstractAggregateIntegrationTest;
-import se.skltp.agp.test.consumer.TestData;
+import se.skltp.agp.test.consumer.ExpectedTestData;
 import se.skltp.agp.test.producer.EngagemangsindexTestProducerLogger;
 import se.skltp.agp.test.producer.TestProducerLogger;
 
 public class ExemptionStatusesIntegrationTest extends AbstractAggregateIntegrationTest {
 
-    public ExemptionStatusesIntegrationTest() {
-        super(rb.getString("TAK_TJANSTEKONTRAKT"));
-    }
     
     private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("GetAggregatedExemptionStatuses-config");
     private static final String SKLTP_HSA_ID = rb.getString("SKLTP_HSA_ID");
@@ -85,6 +83,12 @@ public class ExemptionStatusesIntegrationTest extends AbstractAggregateIntegrati
                 "teststub-non-default-services/tak-teststub-service.xml";
     }
 
+    @Before
+    public void loadTakCache() throws Exception {
+        ExemptionStatusesTestConsumer consumer = new ExemptionStatusesTestConsumer(DEFAULT_SERVICE_ADDRESS, "", "", "");
+        final TakCacheBean takCache = (TakCacheBean) muleContext.getRegistry().lookupObject("takCacheBean");
+        takCache.updateCache();
+    }
     
     /**
      * Perform a test that is expected to return zero hits
@@ -135,7 +139,7 @@ public class ExemptionStatusesIntegrationTest extends AbstractAggregateIntegrati
      */
     @Test
     public void test_ok_one_hit() {
-        List<ProcessingStatusRecordType> statusList = doTest(TEST_RR_ID_ONE_HIT, 2, new TestData(TEST_BO_ID_ONE_HIT, TEST_LOGICAL_ADDRESS_1));
+        List<ProcessingStatusRecordType> statusList = doTest(TEST_RR_ID_ONE_HIT, 2, new ExpectedTestData(TEST_BO_ID_ONE_HIT, TEST_LOGICAL_ADDRESS_1));
         assertProcessingStatusDataFromSource(statusList.get(0), TEST_LOGICAL_ADDRESS_1);
     }
 
@@ -147,9 +151,9 @@ public class ExemptionStatusesIntegrationTest extends AbstractAggregateIntegrati
 
         // Setup call and verify the response, expect one booking from source #1, two from source #2 and a timeout from source #3
         List<ProcessingStatusRecordType> statusList = doTest(TEST_RR_ID_MANY_HITS, 3,
-                new TestData(TEST_BO_ID_MANY_HITS_1, TEST_LOGICAL_ADDRESS_1),
-                new TestData(TEST_BO_ID_MANY_HITS_2, TEST_LOGICAL_ADDRESS_2),
-                new TestData(TEST_BO_ID_MANY_HITS_3, TEST_LOGICAL_ADDRESS_2));
+                new ExpectedTestData(TEST_BO_ID_MANY_HITS_1, TEST_LOGICAL_ADDRESS_1),
+                new ExpectedTestData(TEST_BO_ID_MANY_HITS_2, TEST_LOGICAL_ADDRESS_2),
+                new ExpectedTestData(TEST_BO_ID_MANY_HITS_3, TEST_LOGICAL_ADDRESS_2));
 
         // Verify the Processing Status, expect ok from source system #1 and #2 but a timeout from #3
         assertProcessingStatusDataFromSource(statusList.get(0), TEST_LOGICAL_ADDRESS_1);
@@ -175,19 +179,19 @@ public class ExemptionStatusesIntegrationTest extends AbstractAggregateIntegrati
 
         long ts = System.currentTimeMillis();
 
-        List<ProcessingStatusRecordType> statusList = doTest(TEST_RR_ID_ONE_HIT, SAMPLE_SENDER_ID,"consumer1", SAMPLE_CORRELATION_ID, null, 1, new TestData(TEST_BO_ID_ONE_HIT, TEST_LOGICAL_ADDRESS_1));
+        List<ProcessingStatusRecordType> statusList = doTest(TEST_RR_ID_ONE_HIT, SAMPLE_SENDER_ID,"consumer1", SAMPLE_CORRELATION_ID, null, 1, new ExpectedTestData(TEST_BO_ID_ONE_HIT, TEST_LOGICAL_ADDRESS_1));
         ts = System.currentTimeMillis() - ts;
         assertProcessingStatusDataFromSource(statusList.get(0), TEST_LOGICAL_ADDRESS_1);
         assertTrue("Expected a long processing time (i.e. a non cached response)", ts > expectedProcessingTime);
 
         ts = System.currentTimeMillis();
-        statusList = doTest(TEST_RR_ID_ONE_HIT, SAMPLE_SENDER_ID, "consumer1", SAMPLE_CORRELATION_ID, null, 1, new TestData(TEST_BO_ID_ONE_HIT, TEST_LOGICAL_ADDRESS_1));
+        statusList = doTest(TEST_RR_ID_ONE_HIT, SAMPLE_SENDER_ID, "consumer1", SAMPLE_CORRELATION_ID, null, 1, new ExpectedTestData(TEST_BO_ID_ONE_HIT, TEST_LOGICAL_ADDRESS_1));
         ts = System.currentTimeMillis() - ts;
         assertProcessingStatusDataFromCache(statusList.get(0), TEST_LOGICAL_ADDRESS_1);
         assertTrue("Expected a short processing time (i.e. a cached response)", ts < expectedProcessingTime);
 
         ts = System.currentTimeMillis();
-        statusList = doTest(TEST_RR_ID_ONE_HIT, SAMPLE_SENDER_ID, "consumer2", SAMPLE_CORRELATION_ID, null, 1, new TestData(TEST_BO_ID_ONE_HIT, TEST_LOGICAL_ADDRESS_1));
+        statusList = doTest(TEST_RR_ID_ONE_HIT, SAMPLE_SENDER_ID, "consumer2", SAMPLE_CORRELATION_ID, null, 1, new ExpectedTestData(TEST_BO_ID_ONE_HIT, TEST_LOGICAL_ADDRESS_1));
         ts = System.currentTimeMillis() - ts;
         assertProcessingStatusDataFromSource(statusList.get(0), TEST_LOGICAL_ADDRESS_1);
         assertTrue("Expected a long processing time (i.e. a non cached response)", ts > expectedProcessingTime);
@@ -202,9 +206,9 @@ public class ExemptionStatusesIntegrationTest extends AbstractAggregateIntegrati
 
 
         List<ProcessingStatusRecordType> statusList = doTest(TEST_RR_ID_MANY_HITS, 3,
-                new TestData(TEST_BO_ID_MANY_HITS_1, TEST_LOGICAL_ADDRESS_1),
-                new TestData(TEST_BO_ID_MANY_HITS_2, TEST_LOGICAL_ADDRESS_2),
-                new TestData(TEST_BO_ID_MANY_HITS_3, TEST_LOGICAL_ADDRESS_2));
+                new ExpectedTestData(TEST_BO_ID_MANY_HITS_1, TEST_LOGICAL_ADDRESS_1),
+                new ExpectedTestData(TEST_BO_ID_MANY_HITS_2, TEST_LOGICAL_ADDRESS_2),
+                new ExpectedTestData(TEST_BO_ID_MANY_HITS_3, TEST_LOGICAL_ADDRESS_2));
 
         // Verify the Processing Status, expect ok from source system #1 and #2 but a timeout from #3
         assertProcessingStatusDataFromSource(statusList.get(0), TEST_LOGICAL_ADDRESS_1);
@@ -215,9 +219,9 @@ public class ExemptionStatusesIntegrationTest extends AbstractAggregateIntegrati
 
         ts = System.currentTimeMillis();
         statusList = doTest(TEST_RR_ID_MANY_HITS, 3,
-                new TestData(TEST_BO_ID_MANY_HITS_1, TEST_LOGICAL_ADDRESS_1),
-                new TestData(TEST_BO_ID_MANY_HITS_2, TEST_LOGICAL_ADDRESS_2),
-                new TestData(TEST_BO_ID_MANY_HITS_3, TEST_LOGICAL_ADDRESS_2));
+                new ExpectedTestData(TEST_BO_ID_MANY_HITS_1, TEST_LOGICAL_ADDRESS_1),
+                new ExpectedTestData(TEST_BO_ID_MANY_HITS_2, TEST_LOGICAL_ADDRESS_2),
+                new ExpectedTestData(TEST_BO_ID_MANY_HITS_3, TEST_LOGICAL_ADDRESS_2));
         ts = System.currentTimeMillis() - ts;
         assertProcessingStatusDataFromCache(statusList.get(0), TEST_LOGICAL_ADDRESS_1);
         assertProcessingStatusDataFromCache(statusList.get(1), TEST_LOGICAL_ADDRESS_2);
@@ -231,10 +235,10 @@ public class ExemptionStatusesIntegrationTest extends AbstractAggregateIntegrati
         datePeriod.setStart("20110101");
         datePeriod.setEnd("20130201");
 
-        List<ProcessingStatusRecordType> statusList = doTest(TEST_RR_ID_ONE_HIT, SAMPLE_SENDER_ID, "consumer1", SAMPLE_CORRELATION_ID, datePeriod, 1, new TestData(TEST_BO_ID_ONE_HIT, TEST_LOGICAL_ADDRESS_1));
+        List<ProcessingStatusRecordType> statusList = doTest(TEST_RR_ID_ONE_HIT, SAMPLE_SENDER_ID, "consumer1", SAMPLE_CORRELATION_ID, datePeriod, 1, new ExpectedTestData(TEST_BO_ID_ONE_HIT, TEST_LOGICAL_ADDRESS_1));
         assertProcessingStatusDataFromSource(statusList.get(0), TEST_LOGICAL_ADDRESS_1);
 
-        statusList = doTest(TEST_RR_ID_ONE_HIT, SAMPLE_SENDER_ID, "consumer1", SAMPLE_CORRELATION_ID, datePeriod, 1, new TestData(TEST_BO_ID_ONE_HIT, TEST_LOGICAL_ADDRESS_1));
+        statusList = doTest(TEST_RR_ID_ONE_HIT, SAMPLE_SENDER_ID, "consumer1", SAMPLE_CORRELATION_ID, datePeriod, 1, new ExpectedTestData(TEST_BO_ID_ONE_HIT, TEST_LOGICAL_ADDRESS_1));
         assertProcessingStatusDataFromSource(statusList.get(0), TEST_LOGICAL_ADDRESS_1);
     }
 
@@ -243,10 +247,10 @@ public class ExemptionStatusesIntegrationTest extends AbstractAggregateIntegrati
      *
      * @param registeredResidentId
      * @param expectedProcessingStatusSize
-     * @param testData
+     * @param ExpectedTestData
      * @return
      */
-    private List<ProcessingStatusRecordType> doTest(String registeredResidentId, int expectedProcessingStatusSize, TestData... testData) {
+    private List<ProcessingStatusRecordType> doTest(String registeredResidentId, int expectedProcessingStatusSize, ExpectedTestData... testData) {
         return doTest(registeredResidentId, SAMPLE_SENDER_ID, SAMPLE_ORIGINAL_CONSUMER_HSAID, SAMPLE_CORRELATION_ID, null, expectedProcessingStatusSize, testData);
     }
 
@@ -260,7 +264,7 @@ public class ExemptionStatusesIntegrationTest extends AbstractAggregateIntegrati
      * @param testData
      * @return
      */
-    private List<ProcessingStatusRecordType> doTest(String registeredResidentId, String senderId, String originalConsumerHsaId, String correlationId, DatePeriodType datePeriod,int expectedProcessingStatusSize, TestData... testData) {
+    private List<ProcessingStatusRecordType> doTest(String registeredResidentId, String senderId, String originalConsumerHsaId, String correlationId, DatePeriodType datePeriod,int expectedProcessingStatusSize, ExpectedTestData... testData) {
 
         // Setup and perform the call to the web service
         ExemptionStatusesTestConsumer consumer = new ExemptionStatusesTestConsumer(DEFAULT_SERVICE_ADDRESS, senderId, originalConsumerHsaId, correlationId);
