@@ -28,9 +28,9 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
     </properties>
 
 	<scm>
-		<url>http://github.com/skltp-aggregerandetjanster/riv.financial.patientfees.exemption.GetAggregatedExemptionStatuses</url>
-		<connection>scm:git:git://github.com/skltp-aggregerandetjanster/riv.financial.patientfees.exemption.GetAggregatedExemptionStatuses.git</connection>
-		<developerConnection>scm:git:git://github.com/skltp-aggregerandetjanster/riv.financial.patientfees.exemption.GetAggregatedExemptionStatuses.git</developerConnection>
+		<url>https://github.com:443/skltp-aggregerandetjanster/riv.financial.patientfees.exemption.GetAggregatedExemptionStatuses</url>
+		<connection>scm:git:https://github.com:443/skltp-aggregerandetjanster/riv.financial.patientfees.exemption.GetAggregatedExemptionStatuses.git</connection>
+		<developerConnection>scm:git:https://github.com:443/skltp-aggregerandetjanster/riv.financial.patientfees.exemption.GetAggregatedExemptionStatuses.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 
