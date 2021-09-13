@@ -1,28 +1,24 @@
 package se.skltp.aggregatingservices.riv.financial.patientfees.exemption.getexemptionstatuses;
 
-import static org.junit.Assert.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_LOGICAL_ADDRESS_2;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_MANY_HITS;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_MANY_HITS_NO_ERRORS;
 
 import java.util.List;
 import org.apache.cxf.message.MessageContentsList;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.junit.jupiter.api.Test;
 import riv.financial.patientfees.exemption.getexemptionstatusesresponder.v1.GetExemptionStatusesResponseType;
 import se.skltp.aggregatingservices.api.AgpServiceFactory;
 import se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontentresponder.v1.FindContentResponseType;
-import se.skltp.aggregatingservices.tests.CreateFindContentTest;
-import se.skltp.aggregatingservices.data.TestDataGenerator;
 import se.skltp.aggregatingservices.tests.CreateRequestListTest;
 import se.skltp.aggregatingservices.tests.TestDataUtil;
-import se.skltp.aggregatingservices.utility.RequestListUtil;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+@ExtendWith(SpringExtension.class)
 public class GAESCreateRequestListTest extends CreateRequestListTest {
 
   private static GAESAgpServiceConfiguration configuration = new GAESAgpServiceConfiguration();

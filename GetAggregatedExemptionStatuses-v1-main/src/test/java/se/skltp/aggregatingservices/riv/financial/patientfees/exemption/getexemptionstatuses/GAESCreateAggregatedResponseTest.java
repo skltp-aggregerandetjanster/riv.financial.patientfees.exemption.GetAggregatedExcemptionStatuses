@@ -1,13 +1,13 @@
 package se.skltp.aggregatingservices.riv.financial.patientfees.exemption.getexemptionstatuses;
 
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import riv.financial.patientfees.exemption.getexemptionstatusesresponder.v1.GetExemptionStatusesResponseType;
 import se.skltp.aggregatingservices.api.AgpServiceFactory;
 import se.skltp.aggregatingservices.tests.CreateAggregatedResponseTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 public class GAESCreateAggregatedResponseTest extends CreateAggregatedResponseTest {
 
   private static GAESAgpServiceConfiguration configuration = new GAESAgpServiceConfiguration();

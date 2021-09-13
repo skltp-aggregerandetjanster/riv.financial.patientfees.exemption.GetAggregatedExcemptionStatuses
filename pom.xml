@@ -6,7 +6,7 @@
   <parent>
     <artifactId>agp-parent</artifactId>
     <groupId>se.skltp.agp</groupId>
-    <version>3.0.0-RC4</version>
+    <version>3.0.0</version>
   </parent>
 
   <groupId>se.skltp.aggregatingservices.riv.financial.patientfees.exemption</groupId>
@@ -16,7 +16,7 @@
   <name>GetAggregatedExemptionStatuses-v1</name>
 
   <properties>
-    <agp-parent.version>3.0.0-RC4</agp-parent.version>
+    <agp-parent.version>3.0.0</agp-parent.version>
     <apache-cfx.version>3.2.7</apache-cfx.version>
   </properties>
 
